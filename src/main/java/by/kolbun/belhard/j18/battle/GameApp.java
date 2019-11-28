@@ -4,6 +4,7 @@ import by.kolbun.belhard.j18.battle.model.Battle;
 import by.kolbun.belhard.j18.battle.model.Fighter;
 import by.kolbun.belhard.j18.battle.model.Player;
 import by.kolbun.belhard.j18.battle.model.Weapon;
+import by.kolbun.belhard.j18.battle.repository.BattleRepository;
 import by.kolbun.belhard.j18.battle.repository.ConnectionManager;
 import by.kolbun.belhard.j18.battle.repository.PlayersRepository;
 import by.kolbun.belhard.j18.battle.repository.WeaponRepository;
@@ -17,6 +18,7 @@ public class GameApp {
 
 	private final PlayersRepository playersRepository;
 	private final WeaponRepository weaponRepository;
+	private final BattleRepository battleRepository;
 
 	private List<Player> players;
 	private List<Weapon> weapons;
@@ -28,7 +30,7 @@ public class GameApp {
 		this.consoleService = new ConsoleService();
 		this.playersRepository = new PlayersRepository();
 		this.weaponRepository = new WeaponRepository();
-
+		this.battleRepository = new BattleRepository();
 	}
 
 	public void runApplication() {
@@ -37,11 +39,11 @@ public class GameApp {
 
 		consoleService.printWelcomeMessage();
 
-		battle = new Battle();
+//		battle = new Battle();
 
 		while (true) {
 
-			if (battle.isDone())
+			if (battle == null || battle.isDone())
 				battle = new Battle();
 
 			consoleService.printMainLegend(battle);
@@ -74,6 +76,8 @@ public class GameApp {
 	private void resultsPrintAndSave(Fighter winner) {
 
 		System.out.printf("%s wins this battle!\n", winner != null ? winner : "Nobody ");
+
+		battleRepository.save(battle, winner);
 	}
 
 	private void prepareApplication() {
